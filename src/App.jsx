@@ -230,6 +230,36 @@ export default function FitnessApp() {
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
     0 24px 70px rgba(0, 0, 0, 0.34);
     }
+    .mobile-menu {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu {
+    display: block !important;
+    position: fixed;
+    top: 78px;
+    left: 10px;
+    right: 10px;
+    background: rgba(8, 8, 18, 0.88);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    transform: translateY(-140%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 999;
+    padding: 14px;
+    border-radius: 22px;
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
+  }
+
+  .mobile-menu.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
       `}</style>
     </div>
   );
