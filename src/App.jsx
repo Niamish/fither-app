@@ -2121,78 +2121,145 @@ function WorkoutsSection({ userData, setUserData }) {
 // 33. Workout Categories Component
 function WorkoutCategories({ selectedCategory, setSelectedCategory }) {
   const categories = [
-    { name: "Strength", icon: "💪", count: 45 },
-    { name: "Cardio", icon: "🏃‍♀️", count: 38 },
-    { name: "Yoga", icon: "🧘‍♀️", count: 27 },
-    { name: "HIIT", icon: "⚡", count: 32 },
-    { name: "Pilates", icon: "🤸‍♀️", count: 21 },
-    { name: "Dance", icon: "💃", count: 18 },
+    { name: "Strength", Icon: Activity, count: 45, color: "#ff006e" },
+    { name: "Cardio", Icon: Heart, count: 38, color: "#ff6b00" },
+    { name: "Yoga", Icon: Wind, count: 27, color: "#06ffa5" },
+    { name: "HIIT", Icon: Zap, count: 32, color: "#ffb700" },
+    { name: "Pilates", Icon: Target, count: 21, color: "#8338ec" },
+    { name: "Dance", Icon: Music, count: 18, color: "#0099ff" },
   ];
 
   return (
     <div className="workout-categories">
-      {categories.map((category, index) => (
+      {categories.map((category) => (
         <CategoryCard
-          key={index}
-          {...category}
+          key={category.name}
+          name={category.name}
+          Icon={category.Icon}
+          count={category.count}
+          color={category.color}
           selected={selectedCategory === category.name}
           onClick={() => setSelectedCategory(category.name)}
         />
       ))}
+
       <style>{`
         .workout-categories {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-          gap: 15px;
+          gap: 16px;
           margin-bottom: 40px;
         }
       `}</style>
     </div>
   );
 }
-
 // 34. Category Card Component
-function CategoryCard({ name, icon, count, selected, onClick }) {
+function CategoryCard({ name, Icon, count, color, selected, onClick }) {
   return (
     <div
       className={`category-card ${selected ? "selected" : ""}`}
       onClick={onClick}
+      style={{
+        "--category-color": color,
+      }}
     >
-      <span className="category-icon">{icon}</span>
+      <div className="category-icon">
+        <Icon size={30} strokeWidth={2.4} />
+      </div>
+
       <h3>{name}</h3>
       <p>{count} workouts</p>
+
       <style>{`
         .category-card {
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(20px);
-          border-radius: 16px;
-          padding: 20px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background:
+            radial-gradient(circle at top, color-mix(in srgb, var(--category-color) 22%, transparent), transparent 48%),
+            rgba(255, 255, 255, 0.055);
+          backdrop-filter: blur(22px);
+          border-radius: 18px;
+          padding: 22px 18px;
+          border: 1px solid rgba(255, 255, 255, 0.11);
           text-align: center;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: transform 0.28s ease, border-color 0.28s ease, background 0.28s ease, box-shadow 0.28s ease;
+          position: relative;
+          overflow: hidden;
         }
+
+        .category-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.14),
+            transparent 45%
+          );
+          opacity: 0;
+          transition: opacity 0.28s ease;
+        }
+
         .category-card.selected {
-          border-color: #ff006e;
-          background: rgba(255, 0, 110, 0.1);
+          border-color: var(--category-color);
+          box-shadow:
+            0 18px 45px color-mix(in srgb, var(--category-color) 26%, transparent),
+            inset 0 1px 0 rgba(255, 255, 255, 0.14);
         }
+
         .category-card:hover {
-          transform: translateY(-5px);
-          background: rgba(255, 255, 255, 0.08);
+          transform: translateY(-6px);
+          border-color: color-mix(in srgb, var(--category-color) 70%, white 10%);
+          background:
+            radial-gradient(circle at top, color-mix(in srgb, var(--category-color) 30%, transparent), transparent 52%),
+            rgba(255, 255, 255, 0.075);
+          box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
         }
+
+        .category-card:hover::before {
+          opacity: 1;
+        }
+
         .category-icon {
-          font-size: 36px;
-          display: block;
-          margin-bottom: 10px;
+          width: 58px;
+          height: 58px;
+          margin: 0 auto 14px;
+          border-radius: 18px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--category-color);
+          background: color-mix(in srgb, var(--category-color) 16%, transparent);
+          border: 1px solid color-mix(in srgb, var(--category-color) 32%, transparent);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+          position: relative;
+          z-index: 1;
         }
+
         .category-card h3 {
           font-size: 16px;
-          font-weight: 600;
-          margin-bottom: 4px;
+          font-weight: 750;
+          margin-bottom: 5px;
+          position: relative;
+          z-index: 1;
         }
+
         .category-card p {
           font-size: 13px;
-          color: rgba(255, 255, 255, 0.6);
+          color: rgba(255, 255, 255, 0.62);
+          position: relative;
+          z-index: 1;
+        }
+
+        @media (max-width: 520px) {
+          .category-card {
+            padding: 18px 14px;
+          }
+
+          .category-icon {
+            width: 52px;
+            height: 52px;
+          }
         }
       `}</style>
     </div>
@@ -2208,6 +2275,7 @@ function FeaturedWorkouts({ currentWorkout, setCurrentWorkout }) {
         currentWorkout={currentWorkout}
         setCurrentWorkout={setCurrentWorkout}
       />
+
       <style>{`
         .featured-workouts {
           margin-bottom: 40px;
