@@ -43,23 +43,36 @@ import {
 } from "lucide-react";
 
 // Main App Component
+const DEFAULT_USER_DATA = {
+  name: "Ava",
+  email: "ava.fitness@example.com",
+  phone: "+1 (555) 123-4567",
+  birthday: "March 15, 1995",
+  height: 165,
+  startWeight: 75,
+  currentWeight: 70.5,
+  goalWeight: 65,
+  streak: 7,
+  totalWorkouts: 127,
+  notifications: 3,
+};
+
 export default function FitnessApp() {
   const [activeView, setActiveView] = useState("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [userData, setUserData] = useState({
-    name: "Sarah",
-    email: "sarah.johnson@email.com",
-    phone: "+1 (555) 123-4567",
-    birthday: "March 15, 1992",
-    height: 165,
-    startWeight: 75,
-    currentWeight: 70.5,
-    goalWeight: 65,
-    streak: 7,
-    totalWorkouts: 127,
-    notifications: 3,
+
+  const [userData, setUserData] = useState(() => {
+    try {
+      const saved = localStorage.getItem("fither-user-data");
+      return saved ? JSON.parse(saved) : DEFAULT_USER_DATA;
+    } catch {
+      return DEFAULT_USER_DATA;
+    }
   });
 
+  useEffect(() => {
+    localStorage.setItem("fither-user-data", JSON.stringify(userData));
+  }, [userData]);
   // Add parallax effect to orbs
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -802,30 +815,270 @@ function WelcomeHeader({ name }) {
       ? "Good Afternoon"
       : "Good Evening";
 
+  const formattedDate = currentTime.toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+
   return (
-    <div className="welcome-header">
-      <h1>
-        {greeting}, {name}! 💪
-      </h1>
-      <p>Ready to crush your fitness goals today?</p>
+    <div className="welcome-hero">
+      <div className="hero-left">
+        <span className="eyebrow">{formattedDate}</span>
+        <h1>
+          {greeting}, <span>{name}</span>
+        </h1>
+        <p>
+          Your body is not a project. It is your home. Train with clarity,
+          eat with care, and keep your momentum alive.
+        </p>
+
+        <div className="hero-actions">
+          <button className="primary-cta">
+            <Play size={18} />
+            Start Today’s Workout
+          </button>
+          <button className="secondary-cta">
+            <Calendar size={18} />
+            View Plan
+          </button>
+        </div>
+      </div>
+
+      <div className="hero-card">
+        <div className="score-ring">
+          <span>85%</span>
+          <small>Daily Goal</small>
+        </div>
+        <div className="hero-metrics">
+          <div>
+            <strong>7</strong>
+            <small>Day Streak</small>
+          </div>
+          <div>
+            <strong>45</strong>
+            <small>Active Min</small>
+          </div>
+          <div>
+            <strong>1.5L</strong>
+            <small>Water</small>
+          </div>
+        </div>
+      </div>
+
       <style>{`
-        .welcome-header h1 {
-          font-size: 32px;
+        .welcome-hero {
+          display: grid;
+          grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
+          gap: 24px;
+          align-items: stretch;
+          padding: 32px;
+          border-radius: 28px;
+          background:
+            radial-gradient(circle at top left, rgba(255, 0, 110, 0.25), transparent 35%),
+            radial-gradient(circle at bottom right, rgba(6, 255, 165, 0.16), transparent 30%),
+            rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          backdrop-filter: blur(24px);
+          box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
+          overflow: hidden;
+          position: relative;
+        }
+
+        .welcome-hero::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background-image: linear-gradient(
+              rgba(255, 255, 255, 0.035) 1px,
+              transparent 1px
+            ),
+            linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0.035) 1px,
+              transparent 1px
+            );
+          background-size: 42px 42px;
+          pointer-events: none;
+          mask-image: linear-gradient(to bottom, black, transparent);
+        }
+
+        .hero-left,
+        .hero-card {
+          position: relative;
+          z-index: 1;
+        }
+
+        .eyebrow {
+          display: inline-flex;
+          margin-bottom: 14px;
+          padding: 7px 12px;
+          border-radius: 999px;
+          color: #06ffa5;
+          background: rgba(6, 255, 165, 0.1);
+          border: 1px solid rgba(6, 255, 165, 0.2);
+          font-size: 13px;
           font-weight: 700;
-          margin-bottom: 8px;
-          background: linear-gradient(
-            135deg,
-            #fff 0%,
-            rgba(255, 255, 255, 0.8) 100%
-          );
+          letter-spacing: 0.2px;
+        }
+
+        .hero-left h1 {
+          font-size: clamp(34px, 6vw, 68px);
+          line-height: 0.95;
+          letter-spacing: -3px;
+          margin: 0 0 18px;
+          color: white;
+        }
+
+        .hero-left h1 span {
+          background: linear-gradient(135deg, #ff006e, #ffb700);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          letter-spacing: -1px;
-          filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
         }
-        .welcome-header p {
+
+        .hero-left p {
+          max-width: 680px;
           font-size: 18px;
-          color: rgba(255, 255, 255, 0.7);
+          line-height: 1.65;
+          color: rgba(255, 255, 255, 0.72);
+          margin: 0 0 26px;
+        }
+
+        .hero-actions {
+          display: flex;
+          gap: 14px;
+          flex-wrap: wrap;
+        }
+
+        .primary-cta,
+        .secondary-cta {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 9px;
+          border: none;
+          border-radius: 999px;
+          padding: 14px 20px;
+          font-size: 15px;
+          font-weight: 800;
+          color: white;
+          cursor: pointer;
+          transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+        }
+
+        .primary-cta {
+          background: linear-gradient(135deg, #ff006e, #8338ec);
+          box-shadow: 0 16px 35px rgba(255, 0, 110, 0.28);
+        }
+
+        .secondary-cta {
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.14);
+        }
+
+        .primary-cta:hover,
+        .secondary-cta:hover {
+          transform: translateY(-2px);
+        }
+
+        .hero-card {
+          min-height: 260px;
+          border-radius: 24px;
+          padding: 24px;
+          background: rgba(0, 0, 0, 0.22);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .score-ring {
+          width: 150px;
+          height: 150px;
+          margin: 0 auto;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          background:
+            radial-gradient(circle, rgba(0,0,0,0.8) 55%, transparent 56%),
+            conic-gradient(#06ffa5 0 85%, rgba(255,255,255,0.12) 85% 100%);
+          box-shadow: inset 0 0 35px rgba(6, 255, 165, 0.1);
+        }
+
+        .score-ring span {
+          font-size: 32px;
+          font-weight: 900;
+        }
+
+        .score-ring small {
+          color: rgba(255,255,255,0.6);
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+
+        .hero-metrics {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 10px;
+          margin-top: 20px;
+        }
+
+        .hero-metrics div {
+          padding: 12px;
+          border-radius: 16px;
+          text-align: center;
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .hero-metrics strong {
+          display: block;
+          font-size: 20px;
+        }
+
+        .hero-metrics small {
+          display: block;
+          margin-top: 4px;
+          color: rgba(255, 255, 255, 0.55);
+          font-size: 11px;
+        }
+
+        @media (max-width: 900px) {
+          .welcome-hero {
+            grid-template-columns: 1fr;
+            padding: 24px;
+          }
+
+          .hero-left h1 {
+            letter-spacing: -1.6px;
+          }
+
+          .hero-left p {
+            font-size: 16px;
+          }
+        }
+
+        @media (max-width: 520px) {
+          .welcome-hero {
+            padding: 20px;
+            border-radius: 22px;
+          }
+
+          .hero-actions {
+            flex-direction: column;
+          }
+
+          .primary-cta,
+          .secondary-cta {
+            width: 100%;
+          }
+
+          .hero-metrics {
+            grid-template-columns: 1fr;
+          }
         }
       `}</style>
     </div>
