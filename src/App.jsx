@@ -129,165 +129,257 @@ export default function FitnessApp() {
       <BottomTabBar activeView={activeView} setActiveView={setActiveView} />
 
       <style>{`
-        .app-container {
-          min-height: 100vh;
-          color: white;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-            sans-serif;
-          overflow-x: hidden;
-          position: relative;
-        }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
-        .main-content {
-          padding: 80px 20px 100px;
-          max-width: 1400px;
-          margin: 0 auto;
-          position: relative;
-          z-index: 1;
-        }
+  html {
+    scroll-behavior: smooth;
+  }
 
-        @media (max-width: 768px) {
-          .main-content {
-            padding: 70px 15px 90px;
-          }
-        }
+  body {
+    margin: 0;
+    background: #050512;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+  }
+
+  .app-container {
+    min-height: 100vh;
+    color: white;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+      BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .main-content {
+    padding: 96px 22px 116px;
+    max-width: 1440px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  ::selection {
+    background: rgba(255, 0, 110, 0.55);
+    color: white;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ff006e, #8338ec);
+    border-radius: 999px;
+  }
+
+  @media (max-width: 768px) {
+    .main-content {
+      padding: 82px 14px 110px;
+    }
+  }
+.stat-card,
+.today-schedule,
+.nutrition-snapshot,
+.challenge-card,
+.workout-card,
+.category-card,
+.featured-workout-card,
+.workout-tile,
+.trainer-card {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 50px rgba(0, 0, 0, 0.22);
+}
+
+.stat-card,
+.today-schedule,
+.nutrition-snapshot,
+.challenge-card,
+.workout-card,
+.category-card,
+.workout-tile,
+.trainer-card {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.035)),
+    rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.stat-card:hover,
+.challenge-card:hover,
+.workout-card:hover,
+.category-card:hover,
+.workout-tile:hover,
+.trainer-card:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 24px 70px rgba(0, 0, 0, 0.34);
+    }
       `}</style>
     </div>
   );
 }
-
+      
 // 1. Animated Background Component
 function AnimatedBackground() {
   return (
-    <div className="animated-bg">
-      <div className="gradient-bg"></div>
-      <div className="orb orb1"></div>
-      <div className="orb orb2"></div>
-      <div className="orb orb3"></div>
+    <div className="animated-bg" aria-hidden="true">
+      <div className="mesh-gradient"></div>
+      <div className="aurora aurora-one"></div>
+      <div className="aurora aurora-two"></div>
+      <div className="aurora aurora-three"></div>
+
+      <div className="orb orb-one"></div>
+      <div className="orb orb-two"></div>
+      <div className="orb orb-three"></div>
+      <div className="orb orb-four"></div>
+
+      <div className="grid-overlay"></div>
+      <div className="grain-overlay"></div>
+      <div className="vignette-overlay"></div>
+
       <style>{`
         .animated-bg {
           position: fixed;
-          width: 100%;
-          height: 100%;
-          top: 0;
-          left: 0;
+          inset: 0;
           z-index: -1;
           overflow: hidden;
+          background: #050512;
         }
-        .gradient-bg {
+
+        .mesh-gradient {
           position: absolute;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(125deg, #000428 0%, #004e92 100%);
-          animation: gradientShift 10s ease infinite;
+          inset: -20%;
+          background:
+            radial-gradient(circle at 18% 18%, rgba(255, 0, 110, 0.38), transparent 30%),
+            radial-gradient(circle at 82% 12%, rgba(6, 255, 165, 0.18), transparent 28%),
+            radial-gradient(circle at 50% 55%, rgba(131, 56, 236, 0.32), transparent 35%),
+            radial-gradient(circle at 80% 85%, rgba(0, 153, 255, 0.26), transparent 30%),
+            linear-gradient(135deg, #050512 0%, #0a0f2f 42%, #120724 100%);
+          animation: meshMove 18s ease-in-out infinite alternate;
         }
-        @keyframes gradientShift {
-          0%,
+
+        @keyframes meshMove {
+          0% {
+            transform: scale(1) rotate(0deg);
+          }
           100% {
-            background: linear-gradient(125deg, #000428 0%, #004e92 100%);
-          }
-          50% {
-            background: linear-gradient(
-              125deg,
-              #000428 0%,
-              #004e92 80%,
-              #0066cc 100%
-            );
+            transform: scale(1.08) rotate(2deg);
           }
         }
-        .gradient-bg::before {
-          content: "";
+
+        .aurora {
           position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-image: radial-gradient(
-              at 20% 80%,
-              rgba(255, 0, 110, 0.1) 0%,
-              transparent 50%
-            ),
-            radial-gradient(
-              at 80% 20%,
-              rgba(131, 56, 236, 0.1) 0%,
-              transparent 50%
-            ),
-            radial-gradient(
-              at 40% 40%,
-              rgba(6, 255, 165, 0.05) 0%,
-              transparent 50%
-            );
+          width: 70vw;
+          height: 28vh;
+          border-radius: 999px;
+          filter: blur(42px);
+          opacity: 0.35;
+          mix-blend-mode: screen;
         }
-        .gradient-bg::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-image: linear-gradient(
-              rgba(255, 255, 255, 0.02) 1px,
-              transparent 1px
-            ),
-            linear-gradient(
-              90deg,
-              rgba(255, 255, 255, 0.02) 1px,
-              transparent 1px
-            );
-          background-size: 50px 50px;
-          opacity: 0.5;
+
+        .aurora-one {
+          top: 8%;
+          left: -18%;
+          background: linear-gradient(90deg, transparent, rgba(255, 0, 110, 0.7), transparent);
         }
+
+        .aurora-two {
+          top: 38%;
+          right: -24%;
+          background: linear-gradient(90deg, transparent, rgba(6, 255, 165, 0.55), transparent);
+        }
+
+        .aurora-three {
+          bottom: 12%;
+          left: 8%;
+          background: linear-gradient(90deg, transparent, rgba(131, 56, 236, 0.75), transparent);
+        }
+
         .orb {
           position: absolute;
           border-radius: 50%;
-          filter: blur(60px);
-          opacity: 0.7;
-          animation: float 20s infinite ease-in-out;
+          filter: blur(70px);
+          opacity: 0.62;
         }
-        .orb1 {
-          width: 600px;
-          height: 600px;
-          background: radial-gradient(circle, #ff006e 0%, #8338ec 100%);
-          top: -200px;
-          left: -200px;
-          animation-duration: 25s;
+
+        .orb-one {
+          width: 420px;
+          height: 420px;
+          top: -120px;
+          left: -120px;
+          background: radial-gradient(circle, rgba(255, 0, 110, 0.95), rgba(131, 56, 236, 0.1) 70%);
         }
-        .orb2 {
-          width: 400px;
-          height: 400px;
-          background: radial-gradient(circle, #06ffa5 0%, #0099ff 100%);
-          bottom: -150px;
-          right: -150px;
-          animation-duration: 30s;
-          animation-delay: -5s;
+
+        .orb-two {
+          width: 360px;
+          height: 360px;
+          right: -110px;
+          top: 18%;
+          background: radial-gradient(circle, rgba(6, 255, 165, 0.8), rgba(0, 153, 255, 0.08) 70%);
         }
-        .orb3 {
-          width: 300px;
-          height: 300px;
-          background: radial-gradient(circle, #ffb700 0%, #ff006e 100%);
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          animation-duration: 35s;
-          animation-delay: -10s;
+
+        .orb-three {
+          width: 460px;
+          height: 460px;
+          left: 36%;
+          bottom: -200px;
+          background: radial-gradient(circle, rgba(255, 183, 0, 0.45), rgba(255, 0, 110, 0.05) 72%);
         }
-        @keyframes float {
-          0%,
-          100% {
-            transform: translate(0, 0) scale(1);
-          }
-          33% {
-            transform: translate(100px, -100px) scale(1.1);
-          }
-          66% {
-            transform: translate(-100px, 100px) scale(0.9);
-          }
+
+        .orb-four {
+          width: 260px;
+          height: 260px;
+          right: 22%;
+          bottom: 24%;
+          background: radial-gradient(circle, rgba(131, 56, 236, 0.75), rgba(0, 0, 0, 0) 72%);
+        }
+
+        .grid-overlay {
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+          background-size: 58px 58px;
+          opacity: 0.6;
+        }
+
+        .grain-overlay {
+          position: absolute;
+          inset: 0;
+          opacity: 0.18;
+          background-image:
+            radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18) 0 1px, transparent 1px),
+            radial-gradient(circle at 80% 30%, rgba(255,255,255,0.12) 0 1px, transparent 1px);
+          background-size: 180px 180px, 220px 220px;
+        }
+
+        .vignette-overlay {
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.2) 58%, rgba(0, 0, 0, 0.74) 100%);
         }
       `}</style>
     </div>
   );
 }
-
 // 2. Navigation Component
 function Navigation({ setActiveView, menuOpen, setMenuOpen, userData }) {
   const [scrolled, setScrolled] = useState(false);
@@ -316,19 +408,27 @@ function Navigation({ setActiveView, menuOpen, setMenuOpen, userData }) {
       <style>{`
         .navigation {
           position: fixed;
-          top: 0;
-          width: 100%;
+          top: 14px;
+          left: 14px;
+          right: 14px;
+          width: auto;
           z-index: 1000;
-          backdrop-filter: blur(20px);
-          background: rgba(255, 255, 255, 0.05);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-          padding: 15px 20px;
+          backdrop-filter: blur(26px);
+          background: rgba(8, 8, 18, 0.54);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          padding: 12px 18px;
           transition: all 0.3s ease;
+          border-radius: 24px;
+          box-shadow: 0 18px 55px rgba(0, 0, 0, 0.28);
         }
+
         .navigation.scrolled {
-          padding: 12px 20px;
-          background: rgba(255, 255, 255, 0.1);
+          top: 10px;
+          background: rgba(8, 8, 18, 0.78);
+          border-color: rgba(255, 255, 255, 0.18);
+          box-shadow: 0 20px 70px rgba(0, 0, 0, 0.4);
         }
+
         .nav-content {
           max-width: 1400px;
           margin: 0 auto;
@@ -336,6 +436,7 @@ function Navigation({ setActiveView, menuOpen, setMenuOpen, userData }) {
           justify-content: space-between;
           align-items: center;
         }
+
         .mobile-menu-btn {
           display: none;
           background: none;
@@ -343,7 +444,16 @@ function Navigation({ setActiveView, menuOpen, setMenuOpen, userData }) {
           color: white;
           cursor: pointer;
         }
+
         @media (max-width: 768px) {
+          .navigation {
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            padding: 12px 14px;
+            border-radius: 20px;
+          }
+
           .mobile-menu-btn {
             display: block;
           }
@@ -1189,6 +1299,7 @@ function StatCard({ icon, value, label, color }) {
           font-size: 13px;
           color: rgba(255, 255, 255, 0.6);
         }
+          
       `}</style>
     </div>
   );
@@ -1512,8 +1623,11 @@ function WorkoutCard({ title, duration, difficulty, calories, liked, onLike }) {
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         .workout-image {
-          height: 150px;
-          background: linear-gradient(135deg, #ff006e 0%, #8338ec 100%);
+          height: 165px;
+          background:
+            radial-gradient(circle at 25% 25%, rgba(255,255,255,0.28), transparent 24%),
+            radial-gradient(circle at 80% 10%, rgba(6,255,165,0.22), transparent 26%),
+            linear-gradient(135deg, #ff006e 0%, #8338ec 55%, #111827 100%);
           display: flex;
           align-items: center;
           justify-content: center;
